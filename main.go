@@ -40,22 +40,23 @@ func mains(args []string) error {
 		upperExeName := strings.ToUpper(exeName)
 		for _, p := range processMap {
 			if strings.HasPrefix(p.UpperExecutable, upperExeName) {
-				q := p
 				indent := 0
 				fmt.Print(seperator)
 				seperator = "\n"
 				for {
-					fmt.Printf("%s%-5d %-5d %s\n",
+					fmt.Printf("%s%d %s\n",
 						line(indent),
-						q.Process.Pid(),
-						q.Process.PPid(),
-						q.Process.Executable())
-					var ok bool
-					q, ok = processMap[q.PPid()]
+						p.Process.Pid(),
+						p.Process.Executable())
+					indent++
+					q, ok := processMap[p.PPid()]
 					if !ok {
+						fmt.Printf("%s%d\n",
+							line(indent),
+							p.PPid())
 						break
 					}
-					indent += 2
+					p = q
 				}
 			}
 		}
